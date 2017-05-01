@@ -7,8 +7,6 @@ import edu.princeton.cs.algs4.Point2D;
 
 public class QuadrilateralChecker {
 
-	public final float EPS = 0.0001f;
-
 	public String getType(Point2D[] points) {
 		String type = "NOT_A_QUADRILATERAL";
 		if (points.length == 4) {
@@ -30,7 +28,7 @@ public class QuadrilateralChecker {
 					type = "PARALELLOGRAM";
 					if (formRightAngle(lines[0], lines[3]) & formRightAngle(lines[1], lines[2])) {
 						type = "RECTANGLE";
-						if (compareFloatingPoint(lines[0].getLength(), lines[3].getLength())) {
+						if (FloatingPointUtil.compareFloatingPoint(lines[0].getLength(), lines[3].getLength())) {
 							type = "SQUARE";
 						}
 					}
@@ -41,15 +39,11 @@ public class QuadrilateralChecker {
 	}
 
 	private boolean formRightAngle(Line line, Line line2) {
-		return compareFloatingPoint(-1.0 / line.getSlope(), line2.getSlope());
+		return line.formsRightAngleWith(line2);
 	}
 
 	private boolean areParalell(Line line, Line line2) {
-		return compareFloatingPoint(line.getSlope(), line2.getSlope());
-	}
-
-	private boolean compareFloatingPoint(double d, double d2) {
-		return Math.abs(d - d2) <= EPS;
+		return line.isParalellTo(line2);
 	}
 
 	private Point2D[] getConvexHull(Point2D[] points) {
@@ -57,6 +51,8 @@ public class QuadrilateralChecker {
 		Iterable<Point2D> hull = grahamScan.hull();
 		ArrayList<Point2D> lst = new ArrayList<>();
 		hull.forEach(p -> lst.add(p));
-		return (Point2D[]) lst.toArray();
+
+		Point2D[] arr = new Point2D[lst.size()];
+		return lst.toArray(arr);
 	}
 }
